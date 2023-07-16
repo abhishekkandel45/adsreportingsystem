@@ -1,0 +1,49 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Registration",
+            "request": "launch",
+            "mainClass": "adsreportingsystem.Registration",
+            "projectName": "adsreportingsystem_6d2be060"
+        },
+        {
+            "type": "java",
+            "name": "LoginPage",
+            "request": "launch",
+            "mainClass": "adsreportingsystem.LoginPage",
+            "projectName": "adsreportingsystem_6d2be060"
+        },
+        {
+            "type": "java",
+            "name": "LoginPage",
+            "request": "launch",
+            "mainClass": "LoginPage",
+            "projectName": "adsreportingsystem_6d2be060"
+        },
+        {
+            "type": "java",
+            "name": "Current File",
+            "request": "launch",
+            "mainClass": "${file}"
+        },
+        {
+            "type": "java",
+            "name": "LoginPage",
+            "request": "launch",
+            "mainClass": "adsreportingsystem/adsreportingsystem.LoginPage",
+            "projectName": "adsreportingsystem_6d2be060"
+        },
+        {
+            "type": "java",
+            "name": "Registration",
+            "request": "launch",
+            "mainClass": "adsreportingsystem/adsreportingsystem.Registration",
+            "projectName": "adsreportingsystem_6d2be060"
+        }
+    ]
+}

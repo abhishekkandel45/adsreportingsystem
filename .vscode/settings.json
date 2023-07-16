@@ -1,0 +1,9 @@
+{
+    "java.project.sourcePaths": [
+        "src/adsreportingsystem"
+    ],
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar",
+        "src\\adsreportingsystem\\mysql-connector-java-8.0.11.jar"
+    ]
+}

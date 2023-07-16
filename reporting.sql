@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 16, 2023 at 12:39 PM
+-- Generation Time: Jul 16, 2023 at 07:51 PM
 -- Server version: 10.4.28-MariaDB
--- PHP Version: 8.2.4
+-- PHP Version: 8.0.28
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -28,23 +28,21 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `campaign` (
-  `id` int(11) NOT NULL,
   `name` varchar(30) NOT NULL,
   `platform` varchar(30) NOT NULL,
   `budget` int(8) NOT NULL,
   `type` varchar(30) NOT NULL,
-  `result` int(8) NOT NULL
+  `result` varchar(8) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Indexes for dumped tables
+-- Dumping data for table `campaign`
 --
 
---
--- Indexes for table `campaign`
---
-ALTER TABLE `campaign`
-  ADD PRIMARY KEY (`id`);
+INSERT INTO `campaign` (`name`, `platform`, `budget`, `type`, `result`) VALUES
+('Test', 'Google', 4000, 'Awareness', '85%'),
+('Aakrit', 'Meta', 5000, 'Awareness', '90%'),
+('hello', 'Meta', 50000, 'Views', 'sucess');
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

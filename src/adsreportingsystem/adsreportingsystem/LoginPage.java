@@ -15,7 +15,8 @@ import java.awt.Color;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import javax.swing.JPasswordField;
+import javax.swing.JPasswordField;     //Importing the password field
+//Show password button to show the password
 
 public class LoginPage extends JFrame {
 
@@ -90,9 +91,13 @@ public class LoginPage extends JFrame {
 		panel_1.add(user_text);
 		user_text.setColumns(10);
 		
+
+		//Passwword filed to hide the password
+
 		user_pass = new JPasswordField();
 		user_pass.setBounds(213, 256, 192, 19);
 		panel_1.add(user_pass);
+
 		
 		btnNewButton = new JButton("SUBMIT");
 		btnNewButton.addActionListener(new ActionListener() {

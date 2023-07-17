@@ -1,24 +1,27 @@
 package adsreportingsystem;
-
-import java.awt.EventQueue;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
 import java.awt.Color;
+import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JTextField;
-import javax.swing.JTable;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JButton;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.awt.Font;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.JComboBox;
-import java.sql.*;
-import javax.swing.DefaultComboBoxModel;
 
 public class Registration extends JFrame {
 
@@ -29,6 +32,11 @@ public class Registration extends JFrame {
     private JTable table_1;
     private JTextField textField_1;
     private JComboBox<String> combobox_type;
+
+    // Database connection details
+    private String jdbcUrl = "jdbc:mysql://localhost:3306/reporting";
+    private String username = "root";
+    private String password = "";
 
     /**
      * Launch the application.
@@ -50,6 +58,10 @@ public class Registration extends JFrame {
      * Create the frame.
      */
     public Registration() {
+        // Create the database and table if they don't exist
+        createDatabase(jdbcUrl, username, password);
+        createTable(jdbcUrl, username, password);
+
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 805, 587);
         contentPane = new JPanel();
@@ -106,16 +118,31 @@ public class Registration extends JFrame {
 
         JButton btnUpdate = new JButton("Update");
         btnUpdate.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        btnUpdate.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                updateButtonClicked();
+            }
+        });
         btnUpdate.setBounds(173, 318, 97, 21);
         panel.add(btnUpdate);
 
         JButton btnDelete = new JButton("Delete");
         btnDelete.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        btnDelete.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                deleteButtonClicked();
+            }
+        });
         btnDelete.setBounds(48, 364, 106, 21);
         panel.add(btnDelete);
 
         JButton btnClear = new JButton("Compare");
         btnClear.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        btnClear.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                compareButtonClicked();
+            }
+        });
         btnClear.setBounds(173, 364, 97, 21);
         panel.add(btnClear);
 
@@ -162,11 +189,33 @@ public class Registration extends JFrame {
         textField_1.setBounds(161, 228, 146, 19);
         panel.add(textField_1);
         textField_1.setColumns(10);
+
+        // Refresh the table to show the initial data
+        refreshTable();
+
+        // Add a listener to update the text fields when a row is selected
+        table_1.getSelectionModel().addListSelectionListener(e -> {
+            int selectedRow = table_1.getSelectedRow();
+            if (selectedRow != -1) {
+                DefaultTableModel model = (DefaultTableModel) table_1.getModel();
+                String campaignName = model.getValueAt(selectedRow, 0).toString();
+                String platform = model.getValueAt(selectedRow, 1).toString();
+                String budget = model.getValueAt(selectedRow, 2).toString();
+                String type = model.getValueAt(selectedRow, 3).toString();
+                String result = model.getValueAt(selectedRow, 4).toString();
+
+                textField.setText(campaignName);
+                combo_platform.setSelectedItem(platform);
+                textField_2.setText(budget);
+                combobox_type.setSelectedItem(type);
+                textField_1.setText(result);
+            }
+        });
     }
 
     public void addButtonClicked() {
         try (
-            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/reporting", "root", "");
+            Connection con = DriverManager.getConnection(jdbcUrl, username, password);
             Statement stmt = con.createStatement();
         ) {
             String campaignName = textField.getText();
@@ -188,30 +237,173 @@ public class Registration extends JFrame {
             textField_1.setText("");
 
             // Refresh the table to show the updated data
-            refreshTable(stmt);
+            refreshTable();
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage());
         }
     }
 
-    public void refreshTable(Statement stmt) throws SQLException {
-        String selectQuery = "SELECT * FROM campaign";
+    public void updateButtonClicked() {
+        int selectedRow = table_1.getSelectedRow();
+        if (selectedRow != -1) {
+            try (
+                Connection con = DriverManager.getConnection(jdbcUrl, username, password);
+                Statement stmt = con.createStatement();
+            ) {
+                DefaultTableModel model = (DefaultTableModel) table_1.getModel();
+                String campaignName = textField.getText();
+                String platform = combo_platform.getSelectedItem().toString();
+                String budget = textField_2.getText();
+                String type = combobox_type.getSelectedItem().toString();
+                String result = textField_1.getText();
 
-        ResultSet rs = stmt.executeQuery(selectQuery);
+                String originalCampaignName = model.getValueAt(selectedRow, 0).toString();
+                String originalPlatform = model.getValueAt(selectedRow, 1).toString();
+                String originalBudget = model.getValueAt(selectedRow, 2).toString();
+                String originalType = model.getValueAt(selectedRow, 3).toString();
+                String originalResult = model.getValueAt(selectedRow, 4).toString();
 
-        DefaultTableModel model = (DefaultTableModel) table_1.getModel();
-        model.setRowCount(0); // Clear existing data in the table
+                String updateQuery = "UPDATE campaign SET ";
 
-        while (rs.next()) {
-            String campaignName = rs.getString("name");
-            String platform = rs.getString("platform");
-            String budget = rs.getString("budget");
-            String type = rs.getString("type");
-            String result = rs.getString("result");
+                if (!campaignName.isEmpty()) {
+                    updateQuery += "name = '" + campaignName + "', ";
+                }
+                if (!platform.isEmpty()) {
+                    updateQuery += "platform = '" + platform + "', ";
+                }
+                if (!budget.isEmpty()) {
+                    updateQuery += "budget = '" + budget + "', ";
+                }
+                if (!type.isEmpty()) {
+                    updateQuery += "type = '" + type + "', ";
+                }
+                if (!result.isEmpty()) {
+                    updateQuery += "result = '" + result + "', ";
+                }
 
-            model.addRow(new Object[]{campaignName, platform, budget, type, result});
+                // Remove the trailing comma and space
+                updateQuery = updateQuery.substring(0, updateQuery.length() - 2);
+
+                updateQuery += " WHERE name = '" + originalCampaignName + "' AND platform = '" + originalPlatform +
+                        "' AND budget = '" + originalBudget + "' AND type = '" + originalType +
+                        "' AND result = '" + originalResult + "'";
+
+                stmt.executeUpdate(updateQuery);
+
+                JOptionPane.showMessageDialog(null, "Record updated successfully!");
+
+                // Clear the input fields
+                textField.setText("");
+                textField_2.setText("");
+                textField_1.setText("");
+
+                // Refresh the table to show the updated data
+                refreshTable();
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage());
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Please select a row to update.");
         }
+    }
 
-        rs.close();
+// Delete button Function  for Deleting the data
+    public void deleteButtonClicked() {
+        int selectedRow = table_1.getSelectedRow();
+        if (selectedRow != -1) {
+            try (
+                Connection con = DriverManager.getConnection(jdbcUrl, username, password);
+                Statement stmt = con.createStatement();
+            ) {
+                DefaultTableModel model = (DefaultTableModel) table_1.getModel();
+                String campaignName = model.getValueAt(selectedRow, 0).toString();
+                String platform = model.getValueAt(selectedRow, 1).toString();
+                String budget = model.getValueAt(selectedRow, 2).toString();
+                String type = model.getValueAt(selectedRow, 3).toString();
+                String result = model.getValueAt(selectedRow, 4).toString();
+
+                String deleteQuery = "DELETE FROM campaign WHERE name = '" + campaignName + "' AND platform = '" + platform +
+                        "' AND budget = '" + budget + "' AND type = '" + type + "' AND result = '" + result + "'";
+
+                stmt.executeUpdate(deleteQuery);
+
+                JOptionPane.showMessageDialog(null, "Record deleted successfully!");
+
+                // Clear the input fields
+                textField.setText("");
+                textField_2.setText("");
+                textField_1.setText("");
+
+                // Refresh the table to show the updated data
+                refreshTable();
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage());
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Please select a row to delete.");
+        }
+    }
+//Compare button Function
+    public void compareButtonClicked() {
+        JOptionPane.showMessageDialog(null, "Compare button clicked!");
+    }
+
+    public void refreshTable() {
+        try (
+            Connection con = DriverManager.getConnection(jdbcUrl, username, password);
+            Statement stmt = con.createStatement();
+        ) {
+            String selectQuery = "SELECT * FROM campaign";
+
+            ResultSet rs = stmt.executeQuery(selectQuery);
+
+            DefaultTableModel model = (DefaultTableModel) table_1.getModel();
+            model.setRowCount(0); // Clear existing data in the table
+
+            while (rs.next()) {
+                String campaignName = rs.getString("name");
+                String platform = rs.getString("platform");
+                String budget = rs.getString("budget");
+                String type = rs.getString("type");
+                String result = rs.getString("result");
+
+                model.addRow(new Object[]{campaignName, platform, budget, type, result});
+            }
+
+            rs.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public void createDatabase(String jdbcUrl, String username, String password) {
+        try (
+            Connection con = DriverManager.getConnection(jdbcUrl, username, password);
+            Statement stmt = con.createStatement();
+        ) {
+            String createDatabaseQuery = "CREATE DATABASE IF NOT EXISTS reporting";
+            stmt.executeUpdate(createDatabaseQuery);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public void createTable(String jdbcUrl, String username, String password) {
+        try (
+            Connection con = DriverManager.getConnection(jdbcUrl, username, password);
+            Statement stmt = con.createStatement();
+        ) {
+            String createTableQuery = "CREATE TABLE IF NOT EXISTS campaign (" +
+                "id INT AUTO_INCREMENT PRIMARY KEY," +
+                "name VARCHAR(255) NOT NULL," +
+                "platform VARCHAR(255) NOT NULL," +
+                "budget VARCHAR(255) NOT NULL," +
+                "type VARCHAR(255) NOT NULL," +
+                "result VARCHAR(255) NOT NULL" +
+                ")";
+            stmt.executeUpdate(createTableQuery);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
     }
 }

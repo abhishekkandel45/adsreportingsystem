@@ -5,5 +5,6 @@
     "java.project.referencedLibraries": [
         "lib/**/*.jar",
         "src\\adsreportingsystem\\mysql-connector-java-8.0.11.jar"
-    ]
+    ],
+    "java.debug.settings.onBuildFailureProceed": true
 }

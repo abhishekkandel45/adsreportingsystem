@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 16, 2023 at 07:51 PM
+-- Generation Time: Jul 17, 2023 at 06:26 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.0.28
 
@@ -28,21 +28,41 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `campaign` (
-  `name` varchar(30) NOT NULL,
-  `platform` varchar(30) NOT NULL,
-  `budget` int(8) NOT NULL,
-  `type` varchar(30) NOT NULL,
-  `result` varchar(8) NOT NULL
+  `id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `platform` varchar(255) NOT NULL,
+  `budget` varchar(255) NOT NULL,
+  `type` varchar(255) NOT NULL,
+  `result` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `campaign`
 --
 
-INSERT INTO `campaign` (`name`, `platform`, `budget`, `type`, `result`) VALUES
-('Test', 'Google', 4000, 'Awareness', '85%'),
-('Aakrit', 'Meta', 5000, 'Awareness', '90%'),
-('hello', 'Meta', 50000, 'Views', 'sucess');
+INSERT INTO `campaign` (`id`, `name`, `platform`, `budget`, `type`, `result`) VALUES
+(10, 'Abhishek', 'Google', '7000', 'Awareness', 'fine'),
+(11, 'Robina', 'Meta', '90000', 'Leadgen', 'success');
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `campaign`
+--
+ALTER TABLE `campaign`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `campaign`
+--
+ALTER TABLE `campaign`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

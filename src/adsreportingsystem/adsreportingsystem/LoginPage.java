@@ -59,7 +59,7 @@ public class LoginPage extends JFrame {
 		contentPane.setLayout(null);
 		
 		JPanel panel = new JPanel();
-		panel.setBackground(new Color(0, 64, 128));
+		panel.setBackground(new Color(0, 50, 30));
 		panel.setBounds(24, 20, 987, 545);
 		contentPane.add(panel);
 		panel.setLayout(null);
@@ -69,6 +69,7 @@ public class LoginPage extends JFrame {
 		panel_1.setBounds(270, 30, 468, 485);
 		panel.add(panel_1);
 		panel_1.setLayout(null);
+		
 		
 		JLabel lblNewLabel = new JLabel("Username");
 		lblNewLabel.setBounds(72, 191, 100, 22);

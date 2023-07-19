@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "LoginPage",
+            "request": "launch",
+            "mainClass": "adsreportingsystem.LoginPage",
+            "projectName": "adsreportingsystem_36ca8926"
+        },
+        {
+            "type": "java",
             "name": "Registration",
             "request": "launch",
             "mainClass": "adsreportingsystem.Registration",

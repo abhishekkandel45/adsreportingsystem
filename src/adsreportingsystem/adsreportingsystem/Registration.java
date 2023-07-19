@@ -1,4 +1,5 @@
 package adsreportingsystem;
+
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -22,6 +23,12 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
+
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.category.DefaultCategoryDataset;
 
 public class Registration extends JFrame {
 
@@ -136,15 +143,15 @@ public class Registration extends JFrame {
         btnDelete.setBounds(48, 364, 106, 21);
         panel.add(btnDelete);
 
-        JButton btnClear = new JButton("Compare");
-        btnClear.setFont(new Font("Tahoma", Font.PLAIN, 14));
-        btnClear.addActionListener(new ActionListener() {
+        JButton btnReport = new JButton("Report");
+        btnReport.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        btnReport.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                compareButtonClicked();
+                reportButtonClicked();
             }
         });
-        btnClear.setBounds(173, 364, 97, 21);
-        panel.add(btnClear);
+        btnReport.setBounds(173, 364, 97, 21);
+        panel.add(btnReport);
 
         JPanel panel_1 = new JPanel();
         panel_1.setBounds(356, 79, 421, 434);
@@ -307,7 +314,6 @@ public class Registration extends JFrame {
         }
     }
 
-// Delete button Function  for Deleting the data
     public void deleteButtonClicked() {
         int selectedRow = table_1.getSelectedRow();
         if (selectedRow != -1) {
@@ -343,9 +349,52 @@ public class Registration extends JFrame {
             JOptionPane.showMessageDialog(null, "Please select a row to delete.");
         }
     }
-//Compare button Function
-    public void compareButtonClicked() {
-        JOptionPane.showMessageDialog(null, "Compare button clicked!");
+
+    public void reportButtonClicked() {
+        try (
+            Connection con = DriverManager.getConnection(jdbcUrl, username, password);
+            Statement stmt = con.createStatement();
+        ) {
+            String[] campaignTypes = {"Awareness", "Leadgen", "Views", "Engagement"};
+
+            for (String campaignType : campaignTypes) {
+                DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+
+                String selectQuery = "SELECT platform, result FROM campaign WHERE type = '" + campaignType + "'";
+
+                ResultSet rs = stmt.executeQuery(selectQuery);
+
+                while (rs.next()) {
+                    String platform = rs.getString("platform");
+                    double result = rs.getDouble("result");
+
+                    dataset.addValue(result, "Result", platform);
+                }
+
+                rs.close();
+
+                JFreeChart barChart = ChartFactory.createBarChart(
+                        "Campaign Type Comparison: " + campaignType,
+                        "Platform",
+                        "Result",
+                        dataset,
+                        PlotOrientation.VERTICAL,
+                        true,
+                        true,
+                        false
+                );
+
+                ChartPanel chartPanel = new ChartPanel(barChart);
+
+                JFrame chartFrame = new JFrame("Campaign Type Comparison: " + campaignType);
+                chartFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                chartFrame.setBounds(100, 100, 800, 600);
+                chartFrame.getContentPane().add(chartPanel);
+                chartFrame.setVisible(true);
+            }
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage());
+        }
     }
 
     public void refreshTable() {
@@ -397,9 +446,9 @@ public class Registration extends JFrame {
                 "id INT AUTO_INCREMENT PRIMARY KEY," +
                 "name VARCHAR(255) NOT NULL," +
                 "platform VARCHAR(255) NOT NULL," +
-                "budget VARCHAR(255) NOT NULL," +
+                "budget DECIMAL(10, 2) NOT NULL," +
                 "type VARCHAR(255) NOT NULL," +
-                "result VARCHAR(255) NOT NULL" +
+                "result DECIMAL(10, 2) NOT NULL" +
                 ")";
             stmt.executeUpdate(createTableQuery);
         } catch (SQLException ex) {

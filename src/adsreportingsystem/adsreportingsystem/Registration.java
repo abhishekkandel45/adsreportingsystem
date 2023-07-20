@@ -350,52 +350,71 @@ public class Registration extends JFrame {
         }
     }
 
+
+
+
+
+
+
+
     public void reportButtonClicked() {
         try (
             Connection con = DriverManager.getConnection(jdbcUrl, username, password);
             Statement stmt = con.createStatement();
         ) {
+            DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+    
             String[] campaignTypes = {"Awareness", "Leadgen", "Views", "Engagement"};
-
+    
             for (String campaignType : campaignTypes) {
-                DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-
-                String selectQuery = "SELECT platform, result FROM campaign WHERE type = '" + campaignType + "'";
-
+                String selectQuery = "SELECT platform, SUM(result) AS totalResult FROM campaign WHERE type = '" + campaignType + "' GROUP BY platform";
+    
                 ResultSet rs = stmt.executeQuery(selectQuery);
-
+    
                 while (rs.next()) {
                     String platform = rs.getString("platform");
-                    double result = rs.getDouble("result");
-
-                    dataset.addValue(result, "Result", platform);
+                    double totalResult = rs.getDouble("totalResult");
+    
+                    dataset.addValue(totalResult, campaignType, platform);
                 }
-
+    
                 rs.close();
-
-                JFreeChart barChart = ChartFactory.createBarChart(
-                        "Campaign Type Comparison: " + campaignType,
-                        "Platform",
-                        "Result",
-                        dataset,
-                        PlotOrientation.VERTICAL,
-                        true,
-                        true,
-                        false
-                );
-
-                ChartPanel chartPanel = new ChartPanel(barChart);
-
-                JFrame chartFrame = new JFrame("Campaign Type Comparison: " + campaignType);
-                chartFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-                chartFrame.setBounds(100, 100, 800, 600);
-                chartFrame.getContentPane().add(chartPanel);
-                chartFrame.setVisible(true);
             }
+    
+            JFreeChart barChart = ChartFactory.createBarChart(
+                    "Campaign Type Comparison",
+                    "Platform",
+                    "Total Result",
+                    dataset,
+                    PlotOrientation.VERTICAL,
+                    true,
+                    true,
+                    false
+            );
+    
+            ChartPanel chartPanel = new ChartPanel(barChart);
+    
+            JFrame chartFrame = new JFrame("Campaign Type Comparison");
+            chartFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            chartFrame.setBounds(100, 100, 800, 600);
+            chartFrame.getContentPane().add(chartPanel);
+            chartFrame.setVisible(true);
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage());
         }
     }
+    
+
+
+
+
+
+
+
+
+
+
+
 
     public void refreshTable() {
         try (

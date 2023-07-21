@@ -32,7 +32,7 @@ public class Welcome extends JFrame {
         getContentPane().setLayout(null);
 
         JLabel lblNewLabel = new JLabel("New label");
-        lblNewLabel.setIcon(new ImageIcon("image\\ADs Reporting System.jpg"));
+        lblNewLabel.setIcon(new ImageIcon("image\\Front.png"));
         lblNewLabel.setBounds(0, 0, 1027, 567);
         getContentPane().add(lblNewLabel);
 

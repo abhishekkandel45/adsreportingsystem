@@ -1,36 +1,25 @@
 package adsreportingsystem;
 
-import java.awt.Color;
-import java.awt.EventQueue;
-import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
-
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.*;
+import java.util.Vector;
 
 public class Registration extends JFrame {
+
+    // Database connection details
+    private String jdbcUrl = "jdbc:mysql://localhost:3306/reporting";
+    private String username = "root";
+    private String password = "";
 
     private JPanel contentPane;
     private JTextField textField;
@@ -40,14 +29,6 @@ public class Registration extends JFrame {
     private JTextField textField_1;
     private JComboBox<String> combobox_type;
 
-    // Database connection details
-    private String jdbcUrl = "jdbc:mysql://localhost:3306/reporting";
-    private String username = "root";
-    private String password = "";
-
-    /**
-     * Launch the application.
-     */
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -61,9 +42,6 @@ public class Registration extends JFrame {
         });
     }
 
-    /**
-     * Create the frame.
-     */
     public Registration() {
         // Create the database and table if they don't exist
         createDatabase(jdbcUrl, username, password);
@@ -72,34 +50,58 @@ public class Registration extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 805, 587);
         contentPane = new JPanel();
+        contentPane.setBackground(Color.LIGHT_GRAY); // Set the background color
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-
         setContentPane(contentPane);
         contentPane.setLayout(null);
 
         JPanel panel = new JPanel();
-        panel.setBackground(new Color(119, 169, 219));
+        panel.setBackground(new Color(90, 102, 204));
         panel.setBounds(0, 0, 781, 540);
         contentPane.add(panel);
         panel.setLayout(null);
 
-        JLabel lblNewLabel = new JLabel("Campaign Name");
-        lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 14));
-        lblNewLabel.setBounds(50, 103, 124, 18);
+        // Heading Label in Large Font at top of the page (centered) Ads Reporting System and just below it a line there should be META |Google in small font (centered)
+        JLabel lblNewLabel_3 = new JLabel("ADs REPORTING SYSTEM");
+        lblNewLabel_3.setForeground(Color.WHITE);
+        lblNewLabel_3.setFont(new Font("Tahoma", Font.BOLD, 20));
+        lblNewLabel_3.setBounds(0, 10, 781, 25);
+        lblNewLabel_3.setHorizontalAlignment(SwingConstants.CENTER);
+        panel.add(lblNewLabel_3);
+
+        JLabel lblNewLabel_4 = new JLabel("META | GOOGLE");
+        lblNewLabel_4.setForeground(Color.WHITE);
+        lblNewLabel_4.setFont(new Font("Tahoma", Font.BOLD, 14));
+        lblNewLabel_4.setBounds(0, 45, 781, 25);
+        lblNewLabel_4.setHorizontalAlignment(SwingConstants.CENTER);
+        panel.add(lblNewLabel_4);
+
+
+
+
+        JLabel lblNewLabel = new JLabel("Campagain Name");
+        // Change the Font to Bold and White color
+        lblNewLabel.setForeground(Color.WHITE);
+        lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 12));
+        lblNewLabel.setBounds(48, 105, 106, 19);
         panel.add(lblNewLabel);
+        
 
         JLabel lblContact = new JLabel("Platform");
-        lblContact.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        lblContact.setForeground(Color.WHITE);
+        lblContact.setFont(new Font("Tahoma", Font.BOLD, 12));
         lblContact.setBounds(48, 160, 106, 22);
         panel.add(lblContact);
 
         JLabel lblNewLabel_2 = new JLabel("Budget");
-        lblNewLabel_2.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        lblNewLabel_2.setForeground(Color.WHITE);
+        lblNewLabel_2.setFont(new Font("Tahoma", Font.BOLD, 12));
         lblNewLabel_2.setBounds(50, 131, 86, 19);
         panel.add(lblNewLabel_2);
 
         JLabel lblNewLabel_2_1 = new JLabel("Type");
-        lblNewLabel_2_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        lblNewLabel_2_1.setForeground(Color.WHITE);
+        lblNewLabel_2_1.setFont(new Font("Tahoma", Font.BOLD, 12));
         lblNewLabel_2_1.setBounds(50, 188, 53, 28);
         panel.add(lblNewLabel_2_1);
 
@@ -114,7 +116,7 @@ public class Registration extends JFrame {
         panel.add(textField_2);
 
         JButton btnNewButton = new JButton("Add");
-        btnNewButton.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        btnNewButton.setFont(new Font("Tahoma", Font.BOLD, 14));
         btnNewButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 addButtonClicked();
@@ -124,7 +126,7 @@ public class Registration extends JFrame {
         panel.add(btnNewButton);
 
         JButton btnUpdate = new JButton("Update");
-        btnUpdate.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        btnUpdate.setFont(new Font("Tahoma", Font.BOLD, 14));
         btnUpdate.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 updateButtonClicked();
@@ -134,7 +136,7 @@ public class Registration extends JFrame {
         panel.add(btnUpdate);
 
         JButton btnDelete = new JButton("Delete");
-        btnDelete.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        btnDelete.setFont(new Font("Tahoma", Font.BOLD, 14));
         btnDelete.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 deleteButtonClicked();
@@ -144,7 +146,7 @@ public class Registration extends JFrame {
         panel.add(btnDelete);
 
         JButton btnReport = new JButton("Report");
-        btnReport.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        btnReport.setFont(new Font("Tahoma", Font.BOLD, 14));
         btnReport.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 reportButtonClicked();
@@ -165,10 +167,10 @@ public class Registration extends JFrame {
         table_1 = new JTable();
         scrollPane.setViewportView(table_1);
         table_1.setModel(new DefaultTableModel(
-            new Object[][] {},
-            new String[] {
-                "Campaign Name", "Platform", "Budget", "Type", "Result"
-            }
+                new Object[][] {},
+                new String[] {
+                    "Campaign Name", "Platform", "Budget", "Type", "Result"
+                }
         ));
         table_1.getColumnModel().getColumn(0).setPreferredWidth(105);
         table_1.getColumnModel().getColumn(1).setPreferredWidth(116);
@@ -176,7 +178,8 @@ public class Registration extends JFrame {
         table_1.getColumnModel().getColumn(3).setPreferredWidth(95);
 
         JLabel lblNewLabel_1 = new JLabel("Result");
-        lblNewLabel_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        lblNewLabel_1.setForeground(Color.WHITE);
+        lblNewLabel_1.setFont(new Font("Tahoma", Font.BOLD, 12));
         lblNewLabel_1.setBounds(50, 226, 52, 18);
         panel.add(lblNewLabel_1);
 
@@ -222,8 +225,8 @@ public class Registration extends JFrame {
 
     public void addButtonClicked() {
         try (
-            Connection con = DriverManager.getConnection(jdbcUrl, username, password);
-            Statement stmt = con.createStatement();
+                Connection con = DriverManager.getConnection(jdbcUrl, username, password);
+                Statement stmt = con.createStatement();
         ) {
             String campaignName = textField.getText();
             String platform = combo_platform.getSelectedItem().toString();
@@ -232,7 +235,7 @@ public class Registration extends JFrame {
             String result = textField_1.getText();
 
             String insertQuery = "INSERT INTO campaign (name, platform, budget, type, result) VALUES ('" +
-                campaignName + "', '" + platform + "', '" + budget + "', '" + type + "', '" + result + "')";
+                    campaignName + "', '" + platform + "', '" + budget + "', '" + type + "', '" + result + "')";
 
             stmt.executeUpdate(insertQuery);
 
@@ -254,8 +257,8 @@ public class Registration extends JFrame {
         int selectedRow = table_1.getSelectedRow();
         if (selectedRow != -1) {
             try (
-                Connection con = DriverManager.getConnection(jdbcUrl, username, password);
-                Statement stmt = con.createStatement();
+                    Connection con = DriverManager.getConnection(jdbcUrl, username, password);
+                    Statement stmt = con.createStatement();
             ) {
                 DefaultTableModel model = (DefaultTableModel) table_1.getModel();
                 String campaignName = textField.getText();
@@ -318,8 +321,8 @@ public class Registration extends JFrame {
         int selectedRow = table_1.getSelectedRow();
         if (selectedRow != -1) {
             try (
-                Connection con = DriverManager.getConnection(jdbcUrl, username, password);
-                Statement stmt = con.createStatement();
+                    Connection con = DriverManager.getConnection(jdbcUrl, username, password);
+                    Statement stmt = con.createStatement();
             ) {
                 DefaultTableModel model = (DefaultTableModel) table_1.getModel();
                 String campaignName = model.getValueAt(selectedRow, 0).toString();
@@ -350,37 +353,30 @@ public class Registration extends JFrame {
         }
     }
 
-
-
-
-
-
-
-
     public void reportButtonClicked() {
         try (
-            Connection con = DriverManager.getConnection(jdbcUrl, username, password);
-            Statement stmt = con.createStatement();
+                Connection con = DriverManager.getConnection(jdbcUrl, username, password);
+                Statement stmt = con.createStatement();
         ) {
             DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-    
+
             String[] campaignTypes = {"Awareness", "Leadgen", "Views", "Engagement"};
-    
+
             for (String campaignType : campaignTypes) {
                 String selectQuery = "SELECT platform, SUM(result) AS totalResult FROM campaign WHERE type = '" + campaignType + "' GROUP BY platform";
-    
+
                 ResultSet rs = stmt.executeQuery(selectQuery);
-    
+
                 while (rs.next()) {
                     String platform = rs.getString("platform");
                     double totalResult = rs.getDouble("totalResult");
-    
+
                     dataset.addValue(totalResult, campaignType, platform);
                 }
-    
+
                 rs.close();
             }
-    
+
             JFreeChart barChart = ChartFactory.createBarChart(
                     "Campaign Type Comparison",
                     "Platform",
@@ -391,9 +387,9 @@ public class Registration extends JFrame {
                     true,
                     false
             );
-    
+
             ChartPanel chartPanel = new ChartPanel(barChart);
-    
+
             JFrame chartFrame = new JFrame("Campaign Type Comparison");
             chartFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             chartFrame.setBounds(100, 100, 800, 600);
@@ -403,23 +399,11 @@ public class Registration extends JFrame {
             JOptionPane.showMessageDialog(null, ex.getMessage());
         }
     }
-    
-
-
-
-
-
-
-
-
-
-
-
 
     public void refreshTable() {
         try (
-            Connection con = DriverManager.getConnection(jdbcUrl, username, password);
-            Statement stmt = con.createStatement();
+                Connection con = DriverManager.getConnection(jdbcUrl, username, password);
+                Statement stmt = con.createStatement();
         ) {
             String selectQuery = "SELECT * FROM campaign";
 
@@ -446,8 +430,8 @@ public class Registration extends JFrame {
 
     public void createDatabase(String jdbcUrl, String username, String password) {
         try (
-            Connection con = DriverManager.getConnection(jdbcUrl, username, password);
-            Statement stmt = con.createStatement();
+                Connection con = DriverManager.getConnection(jdbcUrl, username, password);
+                Statement stmt = con.createStatement();
         ) {
             String createDatabaseQuery = "CREATE DATABASE IF NOT EXISTS reporting";
             stmt.executeUpdate(createDatabaseQuery);
@@ -458,17 +442,17 @@ public class Registration extends JFrame {
 
     public void createTable(String jdbcUrl, String username, String password) {
         try (
-            Connection con = DriverManager.getConnection(jdbcUrl, username, password);
-            Statement stmt = con.createStatement();
+                Connection con = DriverManager.getConnection(jdbcUrl, username, password);
+                Statement stmt = con.createStatement();
         ) {
             String createTableQuery = "CREATE TABLE IF NOT EXISTS campaign (" +
-                "id INT AUTO_INCREMENT PRIMARY KEY," +
-                "name VARCHAR(255) NOT NULL," +
-                "platform VARCHAR(255) NOT NULL," +
-                "budget DECIMAL(10, 2) NOT NULL," +
-                "type VARCHAR(255) NOT NULL," +
-                "result DECIMAL(10, 2) NOT NULL" +
-                ")";
+                    "id INT AUTO_INCREMENT PRIMARY KEY," +
+                    "name VARCHAR(255) NOT NULL," +
+                    "platform VARCHAR(255) NOT NULL," +
+                    "budget DECIMAL(10, 2) NOT NULL," +
+                    "type VARCHAR(255) NOT NULL," +
+                    "result DECIMAL(10, 2) NOT NULL" +
+                    ")";
             stmt.executeUpdate(createTableQuery);
         } catch (SQLException ex) {
             ex.printStackTrace();

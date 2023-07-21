@@ -54,5 +54,7 @@ public class Welcome extends JFrame {
     public void openLoginPage() {
         LoginPage loginPage = new LoginPage();
         loginPage.setVisible(true);
+        this.dispose(); // dispose of the Welcome frame
     }
+    
 }

@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "AdsReportingSystem",
+            "request": "launch",
+            "mainClass": "adsreportingsystem.AdsReportingSystem",
+            "projectName": "adsreportingsystem_6d2be060"
+        },
+        {
+            "type": "java",
             "name": "Welcome",
             "request": "launch",
             "mainClass": "adsreportingsystem.Welcome",

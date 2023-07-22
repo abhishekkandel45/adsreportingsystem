@@ -355,46 +355,48 @@ public class Registration extends JFrame {
 
     public void reportButtonClicked() {
         try (
-                Connection con = DriverManager.getConnection(jdbcUrl, username, password);
+                Connection con = DriverManager.getConnection(jdbcUrl, username, password);                          // Get a connection to the database
                 Statement stmt = con.createStatement();
         ) {
-            DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+            DefaultCategoryDataset dataset = new DefaultCategoryDataset();                                          // Create a dataset to hold the data for the chart
 
-            String[] campaignTypes = {"Awareness", "Leadgen", "Views", "Engagement"};
+            String[] campaignTypes = {"Awareness", "Leadgen", "Views", "Engagement"};                                   // Create an array of the campaign types
 
-            for (String campaignType : campaignTypes) {
-                String selectQuery = "SELECT platform, SUM(result) AS totalResult FROM campaign WHERE type = '" + campaignType + "' GROUP BY platform";
+            for (String campaignType : campaignTypes) {                                                                 // Loop through the campaign types
+                String selectQuery = "SELECT platform, SUM(result) AS totalResult FROM campaign WHERE type = '" + campaignType + "' GROUP BY platform";             // Create a query to get the total result for each platform for the current campaign type
 
-                ResultSet rs = stmt.executeQuery(selectQuery);
+                ResultSet rs = stmt.executeQuery(selectQuery);   // Execute the query
 
                 while (rs.next()) {
-                    String platform = rs.getString("platform");
-                    double totalResult = rs.getDouble("totalResult");
+                    String platform = rs.getString("platform");                 // Get the platform
+                    double totalResult = rs.getDouble("totalResult");           // Get the total result for the platform from the query
 
-                    dataset.addValue(totalResult, campaignType, platform);
+                    dataset.addValue(totalResult, campaignType, platform);                  
                 }
 
                 rs.close();
             }
 
-            JFreeChart barChart = ChartFactory.createBarChart(
-                    "Campaign Type Comparison",
-                    "Platform",
-                    "Total Result",
-                    dataset,
-                    PlotOrientation.VERTICAL,
+
+            //  Create the chart using the dataset, title, axis titles, etc. and display it on a JFrame window 
+            JFreeChart barChart = ChartFactory.createBarChart(    // Create a bar chart
+                    "Campaign Type Comparison",             // Chart title
+                    "Platform",                 // X-axis label
+                    "Total Result",                 // Y-axis label
+                    dataset,                                        // Dataset to use
+                    PlotOrientation.VERTICAL,                      // Chart orientation
+                    true,                                   // Show legend
                     true,
-                    true,
-                    false
+                    false                                   // Show tooltips
             );
 
-            ChartPanel chartPanel = new ChartPanel(barChart);
+            ChartPanel chartPanel = new ChartPanel(barChart);           // Create a chart panel to hold the chart
 
-            JFrame chartFrame = new JFrame("Campaign Type Comparison");
-            chartFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            chartFrame.setBounds(100, 100, 800, 600);
-            chartFrame.getContentPane().add(chartPanel);
-            chartFrame.setVisible(true);
+            JFrame chartFrame = new JFrame("Campaign Type Comparison");         // Create a JFrame to display the chart
+            chartFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);               // Set the close operation to dispose of the JFrame
+            chartFrame.setBounds(100, 100, 800, 600);                   // Set the size of the JFrame
+            chartFrame.getContentPane().add(chartPanel);                                // Add the chart panel to the JFrame
+            chartFrame.setVisible(true);                                            // Display the JFrame
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage());
         }

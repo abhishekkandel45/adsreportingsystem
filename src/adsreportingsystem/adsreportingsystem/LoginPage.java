@@ -104,7 +104,7 @@ public class LoginPage extends JFrame {
         panel_1.add(editorPane_1);
 
         // Background image which is inside the root folder ie image/ads.jpg
-        ImageIcon backgroundImageIcon = new ImageIcon("image/ads.jpg");
+        ImageIcon backgroundImageIcon = new ImageIcon("src\\adsreportingsystem\\adsreportingsystem\\image/ads.jpg");
         JLabel lblNewLabel_3 = new JLabel(backgroundImageIcon);
         lblNewLabel_3.setBounds(0, 0, 1049, 595);
         panel.add(lblNewLabel_3);

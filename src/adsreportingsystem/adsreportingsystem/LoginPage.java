@@ -1,27 +1,15 @@
 package adsreportingsystem;
 
-import java.awt.Color;
-import java.awt.EventQueue;
-import java.awt.Font;
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JEditorPane;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.SwingConstants;
-import javax.swing.JTextField;
-import javax.swing.border.EmptyBorder;
 
 public class LoginPage extends JFrame {
 
-    private JPanel contentPane;
-    private JTextField user_text;
-    private JPasswordField user_pass; // Password field to hide the password
+    private final JTextField user_text;
+    private final JPasswordField user_pass; // Password field to hide the password
     JButton btnNewButton;
     String username;
     String password;
@@ -44,7 +32,7 @@ public class LoginPage extends JFrame {
     public LoginPage() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 1030, 627);
-        contentPane = new JPanel();
+        JPanel contentPane = new JPanel();
         contentPane.setBackground(Color.LIGHT_GRAY);
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
